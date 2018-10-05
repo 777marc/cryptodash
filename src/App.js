@@ -4,13 +4,12 @@ import styled from 'styled-components';
 import AppBar from './components/AppBar';
 import CoinList from './components/CoinList';
 import Search from './components/Search';
+import Dashboard from './components/Dashboard';
 import { ConfirmButton } from './components/Button';
 import _ from 'lodash';
 import fuzzy from 'fuzzy';
 
 const cc = require('cryptocompare');
-
-
 
 const AppLayout = styled.div`
   padding: 40px;
@@ -26,34 +25,53 @@ export const CenterDiv = styled.div`
 const MAX_FAVORITES = 10;
 
 const checkFirstVisit = () => {
-  let cryptoDashData = localStorage.getItem('cryptoDash');
+  let cryptoDashData = JSON.parse(localStorage.getItem('cryptoDash'));
   if(!cryptoDashData) {
     return {
       firstVisit: true,
       page: 'settings'
     }
   }
-  return {};
+  return {
+    favorites: cryptoDashData.favorites
+  };
 }
-
-
 
 class App extends Component {
 
   state = {
-    page: 'settings',
-    coinList: '',
+    page: 'dashboard',
     favorites: ['ETH', 'BTC', 'DOGE', 'EOS'],
     ...checkFirstVisit()
   }
 
   componentDidMount = () => {
     this.fetchCoins();
+    this.fetchPrices();
   }
 
   fetchCoins = async () => {
     let coinList = await cc.coinList();
     this.setState({ coinList : coinList.Data })
+  }
+
+  fetchPrices = async () => {
+    let prices = [];
+    try {
+      prices = await this.prices();
+    } catch (error) {
+      this.setState({error: true});
+    }
+    console.log(prices);
+    this.setState({prices});
+  }
+
+  prices = () => {
+    let promises = [];
+    this.state.favorites.forEach(sym => {
+      promises.push(cc.priceFull(sym,'USD'));
+    });
+    return Promise.all(promises);
   }
 
   displayingDashboard = () => this.state.page === 'dashboard';
@@ -67,8 +85,9 @@ class App extends Component {
   }
 
   confirmFavorites = () => {
-    this.setState({ firstVisit: false, page: 'dashboard' });
-    localStorage.setItem('cryptoDash', JSON.stringify(this.state.favorites));
+    this.setState({ firstVisit: false, page: 'dashboard', prices: null });
+    this.fetchPrices();
+    localStorage.setItem('cryptoDash', JSON.stringify({favorites: this.state.favorites}));
   }
 
   settingsContent = () => {
@@ -90,6 +109,9 @@ class App extends Component {
   loadingContent = () => {
     if(!this.state.coinList){
       return <div>Loading Coins</div>          
+    }
+    if(!this.state.prices){
+      return <div>Loading Pricing</div>          
     }
   }
 
@@ -129,13 +151,18 @@ class App extends Component {
     this.handleFilter(inputValue);
   }
 
+  // 
+
   render() {
     return (
       <AppLayout>
         {AppBar.call(this)}
-        {this.loadingContent() || <Content>
-          {this.displayingSettings && this.settingsContent()}
-        </Content>}
+        {this.loadingContent() || 
+          <Content>
+            {this.displayingSettings && this.settingsContent()}
+            {this.displayingDashboard && Dashboard.call(this)}
+          </Content>
+        }
       </AppLayout>
     );
   }

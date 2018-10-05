@@ -2,7 +2,7 @@ import React from 'react'
 import styled, {css} from 'styled-components';
 import { subtleBoxShadow, lightBlueBackground, greenBoxShadow, redBoxShadow, color } from '../styles/Styles'
 
-const CoinGrid = styled.div`
+export const CoinGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   ${props => props.count && css`
@@ -11,7 +11,7 @@ const CoinGrid = styled.div`
   grid-gap: 15px;
   margin-top: 40px;
 `
-const CoinTile = styled.div`
+export const CoinTile = styled.div`
   ${subtleBoxShadow}
   ${lightBlueBackground}
   padding: 10px;
@@ -30,11 +30,11 @@ const CoinTile = styled.div`
     opacity: 0.4;
   `}
 `
-const CoinHeaderGrid = styled.div`
+export const CoinHeaderGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
 `
-const CoinSymbol = styled.div`
+export const CoinSymbol = styled.div`
   justify-self:  right;
 `
 const DeleteIcon = styled.div`
