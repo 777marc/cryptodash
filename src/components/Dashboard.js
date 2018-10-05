@@ -1,7 +1,7 @@
 import React from 'react'
 import {CoinGrid, CoinTile, CoinHeaderGrid, CoinSymbol} from './CoinList';
 import styled, {css} from 'styled-components';
-import {fontSizeBig} from '../styles/Styles';
+import {fontSizeBig, fontSize2} from '../styles/Styles';
 
 const numberFormat = (number) => {
   return +(number + '').slice(0,7);
@@ -16,14 +16,21 @@ const ChangePct = styled.div`
 const TickerPrice = styled.div`
   ${fontSizeBig}
 `
+const CoinTileCompact = CoinTile.extend`
+  ${fontSize2}
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: right;
+`
 
 export default function(){
 
   return <CoinGrid>
-    {this.state.prices.map(price => {
+    {this.state.prices.map((price, index) => {
       let sym = Object.keys(price)[0];
       let data = price[sym]['USD'];
-      return <CoinTile>
+      return index < 5 ? <CoinTile>
         <CoinHeaderGrid>
           <div>{ sym }</div>
           <CoinSymbol>
@@ -33,7 +40,16 @@ export default function(){
           </CoinSymbol>
         </CoinHeaderGrid>
         <TickerPrice>${numberFormat(data.PRICE)}</TickerPrice>
-      </CoinTile>
+      </CoinTile> :
+      <CoinTileCompact>
+        <div style={{justifySelf:'left'}}>{sym}</div>
+        <CoinSymbol>
+          <ChangePct red={data.CHANGEPCT24HOUR < 0}>
+            { numberFormat(data.CHANGEPCT24HOUR) } %
+          </ChangePct>
+        </CoinSymbol>
+        <div>${numberFormat(data.PRICE)}</div>
+      </CoinTileCompact>
     })}
   </CoinGrid>
   

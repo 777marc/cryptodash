@@ -91,21 +91,22 @@ class App extends Component {
   }
 
   settingsContent = () => {
-    return <div>
-      {this.firstVisitMessage()}
+    return (
       <div>
-        {CoinList.call(this, true)}
-        <CenterDiv>
-          <ConfirmButton onClick={this.confirmFavorites}>
-            Confirm Favorites
-          </ConfirmButton>
-        </CenterDiv>
-        {Search.call(this)}
-        {CoinList.call(this)}
-      </div>    
-    </div>
-  }
-
+        {this.firstVisitMessage()}
+        <div>
+          {CoinList.call(this, true)}
+          <CenterDiv>
+            <ConfirmButton onClick={this.confirmFavorites}>
+              Confirm Favorites
+            </ConfirmButton>
+          </CenterDiv>
+          {Search.call(this)}
+          {CoinList.call(this)}
+        </div>
+      </div>
+    );
+  };
   loadingContent = () => {
     if(!this.state.coinList){
       return <div>Loading Coins</div>          
@@ -157,12 +158,12 @@ class App extends Component {
     return (
       <AppLayout>
         {AppBar.call(this)}
-        {this.loadingContent() || 
+        {this.loadingContent() || (
           <Content>
-            {this.displayingSettings && this.settingsContent()}
-            {this.displayingDashboard && Dashboard.call(this)}
+            {this.displayingSettings() && this.settingsContent()}
+            {this.displayingDashboard() && Dashboard.call(this)}
           </Content>
-        }
+        )}
       </AppLayout>
     );
   }
