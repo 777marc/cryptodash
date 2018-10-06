@@ -1,7 +1,7 @@
 import React from 'react'
 import {CoinGrid, CoinTile, CoinHeaderGrid, CoinSymbol} from './CoinList';
 import styled, {css} from 'styled-components';
-import {fontSizeBig, fontSize2} from '../styles/Styles';
+import {fontSizeBig, fontSize2, subtleBoxShadow, lightBlueBackground} from '../styles/Styles';
 
 const numberFormat = (number) => {
   return +(number + '').slice(0,7);
@@ -23,35 +23,57 @@ const CoinTileCompact = CoinTile.extend`
   grid-template-columns: repeat(3, 1fr);
   justify-items: right;
 `
+const PaddingBlue = styled.div`
+  ${subtleBoxShadow}
+  ${lightBlueBackground}
+  padding: 5px;
+`
+const ChartGrid = styled.div`
+  display: grid;
+  margin-top: 15px;
+  grid-gap: 20px;
+  grid-template-columns: 1fr 3fr;
+`
 
 export default function(){
-
-  return <CoinGrid>
+    
+  return [
+    <CoinGrid key={'coingrid'}>
     {this.state.prices.map((price, index) => {
       let sym = Object.keys(price)[0];
       let data = price[sym]['USD'];
-      return index < 5 ? <CoinTile>
-        <CoinHeaderGrid>
-          <div>{ sym }</div>
+      return index < 5 ? 
+        <CoinTile key={index} onClick={() => {this.setState({ currentFavorite: sym })}}>
+          <CoinHeaderGrid>
+            <div>{ sym }</div>
+            <CoinSymbol>
+              <ChangePct red={data.CHANGEPCT24HOUR < 0}>
+                { numberFormat(data.CHANGEPCT24HOUR) } %
+              </ChangePct>
+            </CoinSymbol>
+          </CoinHeaderGrid>
+          <TickerPrice>${numberFormat(data.PRICE)}</TickerPrice>
+        </CoinTile> :
+        <CoinTileCompact key={index} onClick={() => {this.setState({ currentFavorite: sym })}}>
+          <div style={{justifySelf:'left'}}>{sym}</div>
           <CoinSymbol>
             <ChangePct red={data.CHANGEPCT24HOUR < 0}>
               { numberFormat(data.CHANGEPCT24HOUR) } %
             </ChangePct>
           </CoinSymbol>
-        </CoinHeaderGrid>
-        <TickerPrice>${numberFormat(data.PRICE)}</TickerPrice>
-      </CoinTile> :
-      <CoinTileCompact>
-        <div style={{justifySelf:'left'}}>{sym}</div>
-        <CoinSymbol>
-          <ChangePct red={data.CHANGEPCT24HOUR < 0}>
-            { numberFormat(data.CHANGEPCT24HOUR) } %
-          </ChangePct>
-        </CoinSymbol>
-        <div>${numberFormat(data.PRICE)}</div>
-      </CoinTileCompact>
+          <div>${numberFormat(data.PRICE)}</div>
+        </CoinTileCompact>
     })}
-  </CoinGrid>
-  
+    </CoinGrid>,
+    <ChartGrid>
+      <PaddingBlue>
+        <h2 style={{textAlign: 'center'}}>{this.state.coinList[this.state.currentFavorite].CoinName}</h2>
+        <img style={{height: '200px', display: 'block', margin: 'auto'}} src={`http://cryptocompare.com/${this.state.coinList[this.state.currentFavorite].ImageUrl}`} alt='coin'/>
+      </PaddingBlue>
+      <PaddingBlue>
+        Chart Goes Here
+      </PaddingBlue>
+    </ChartGrid>
+  ]  
 
 }

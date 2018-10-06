@@ -46,6 +46,7 @@ const DeleteIcon = styled.div`
   }
 `
 
+
 export default function(favorites=false) {
   let coinKeys = favorites ? 
     this.state.favorites : 

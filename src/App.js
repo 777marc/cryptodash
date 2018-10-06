@@ -15,7 +15,6 @@ const AppLayout = styled.div`
   padding: 40px;
 `
 const Content = styled.div`
-
 `
 export const CenterDiv = styled.div`
   display: grid;
@@ -42,6 +41,7 @@ class App extends Component {
   state = {
     page: 'dashboard',
     favorites: ['ETH', 'BTC', 'DOGE', 'EOS'],
+    currentFavorite: 'ETH',
     ...checkFirstVisit()
   }
 
@@ -62,7 +62,6 @@ class App extends Component {
     } catch (error) {
       this.setState({error: true});
     }
-    console.log(prices);
     this.setState({prices});
   }
 
@@ -85,7 +84,8 @@ class App extends Component {
   }
 
   confirmFavorites = () => {
-    this.setState({ firstVisit: false, page: 'dashboard', prices: null });
+    let currentFavorite = this.state.favorites[0];
+    this.setState({ firstVisit: false, page: 'dashboard', prices: null, currentFavorite });
     this.fetchPrices();
     localStorage.setItem('cryptoDash', JSON.stringify({favorites: this.state.favorites}));
   }
@@ -107,6 +107,7 @@ class App extends Component {
       </div>
     );
   };
+
   loadingContent = () => {
     if(!this.state.coinList){
       return <div>Loading Coins</div>          
@@ -152,7 +153,10 @@ class App extends Component {
     this.handleFilter(inputValue);
   }
 
-  // 
+  isCurrentFavorite = (e) => {
+    //let coin = _.get(e,'target.value');
+    console.log(e);
+  }
 
   render() {
     return (
