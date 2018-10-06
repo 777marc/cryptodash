@@ -42,8 +42,15 @@ export default function(){
     {this.state.prices.map((price, index) => {
       let sym = Object.keys(price)[0];
       let data = price[sym]['USD'];
+      let tileProps = {
+        dashBoardFavorite: sym === this.state.currentFavorite,
+        onClick: () => {
+          this.setState({ currentFavorite: sym })
+          localStorage.setItem('cryptoDash', JSON.stringify({favorites:this.state.favorites,currentFavorite:sym}));
+        }
+      }
       return index < 5 ? 
-        <CoinTile key={index} onClick={() => {this.setState({ currentFavorite: sym })}}>
+        <CoinTile {...tileProps}>
           <CoinHeaderGrid>
             <div>{ sym }</div>
             <CoinSymbol>
@@ -53,8 +60,8 @@ export default function(){
             </CoinSymbol>
           </CoinHeaderGrid>
           <TickerPrice>${numberFormat(data.PRICE)}</TickerPrice>
-        </CoinTile> :
-        <CoinTileCompact key={index} onClick={() => {this.setState({ currentFavorite: sym })}}>
+        </CoinTile>  :
+        <CoinTileCompact {...tileProps}>
           <div style={{justifySelf:'left'}}>{sym}</div>
           <CoinSymbol>
             <ChangePct red={data.CHANGEPCT24HOUR < 0}>
@@ -68,7 +75,11 @@ export default function(){
     <ChartGrid>
       <PaddingBlue>
         <h2 style={{textAlign: 'center'}}>{this.state.coinList[this.state.currentFavorite].CoinName}</h2>
-        <img style={{height: '200px', display: 'block', margin: 'auto'}} src={`http://cryptocompare.com/${this.state.coinList[this.state.currentFavorite].ImageUrl}`} alt='coin'/>
+        <img 
+          style={{height: '200px', display: 'block', margin: 'auto'}} 
+          src={`http://cryptocompare.com/${this.state.coinList[this.state.currentFavorite].ImageUrl}`} 
+          alt='coin'
+        />
       </PaddingBlue>
       <PaddingBlue>
         Chart Goes Here

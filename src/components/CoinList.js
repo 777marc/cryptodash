@@ -25,6 +25,14 @@ export const CoinTile = styled.div`
       ${redBoxShadow}
     }
   `}
+	${props =>
+    props.dashBoardFavorite &&
+    css`
+      ${greenBoxShadow} 
+      &:hover {
+        pointer-events: none;
+      }
+  `}
   ${props => props.chosen && !props.favorite && css`
     pointer-events: none;
     opacity: 0.4;
@@ -45,7 +53,6 @@ const DeleteIcon = styled.div`
     color:red;
   }
 `
-
 
 export default function(favorites=false) {
   let coinKeys = favorites ? 
