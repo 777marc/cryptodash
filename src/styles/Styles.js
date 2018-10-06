@@ -1,3 +1,7 @@
+const theme = 'dark';
+//const theme = 'light';
+export const lightTheme = theme === 'light';
+
 export const color = '#061a44';
 export const color2 = '#010e2c'
 export const color3 = '#053c18';
