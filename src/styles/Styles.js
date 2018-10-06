@@ -7,8 +7,8 @@ export const color2 = '#010e2c'
 export const color3 = '#053c18';
 
 export const lightBlueBackground = `background-color: ${color}`;
-export const BackgroundColor2 = `background-color: ${color2}`;
-export const BackgroundColor3 = `background-color: ${color3}`;
+export const backgroundColor2 = `background-color: ${color2}`;
+export const backgroundColor3 = `background-color: ${color3}`;
 
 export const fontColorGreen = `color: #03A9F4`;
 export const fontColorWhite = `color: white`;

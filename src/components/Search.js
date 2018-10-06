@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
-import { BackgroundColor2, fontSize2 } from '../styles/Styles';
+import { backgroundColor2, fontSize2 } from '../styles/Styles';
 import { WhiteText } from './Text';
 
 const SearchContainer = styled.div`
@@ -10,7 +10,7 @@ const SearchContainer = styled.div`
   grid-gap: 20px;
 `
 const SearchInput = styled.input`
-  ${BackgroundColor2}
+  ${backgroundColor2}
   color: #1163c9;
   borders: 1px solid;
   ${fontSize2}

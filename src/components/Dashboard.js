@@ -1,7 +1,7 @@
 import React from 'react'
 import {CoinGrid, CoinTile, CoinHeaderGrid, CoinSymbol} from './CoinList';
 import styled, {css} from 'styled-components';
-import {fontSizeBig, fontSize2, subtleBoxShadow, lightBlueBackground} from '../styles/Styles';
+import {fontSizeBig, fontSize2, subtleBoxShadow, lightBlueBackground, backgroundColor2} from '../styles/Styles';
 import highchartsConfig from './HighChartsConfig';
 import theme from './HighChartsTheme';
 
@@ -38,9 +38,18 @@ const ChartGrid = styled.div`
   grid-gap: 20px;
   grid-template-columns: 1fr 3fr;
 `
+const ChartSelect = styled.select`
+  ${backgroundColor2} 
+  color: #1163c9;
+  border: 1px solid;
+  ${fontSize2} 
+  margin: 5px;
+  height: 25px;
+  float: right;
+`;
 
 export default function(){
-    
+  console.log('dash:', this.state.historical);
   return [
     <CoinGrid key={'coingrid'}>
     {this.state.prices.map((price, index) => {
@@ -49,8 +58,9 @@ export default function(){
       let tileProps = {
         dashBoardFavorite: sym === this.state.currentFavorite,
         onClick: () => {
-          this.setState({ currentFavorite: sym })
+          this.setState({ currentFavorite: sym });
           localStorage.setItem('cryptoDash', JSON.stringify({favorites:this.state.favorites,currentFavorite:sym}));
+          this.fetchHistorical();
         }
       }
       return index < 5 ? 
@@ -86,7 +96,21 @@ export default function(){
         />
       </PaddingBlue>
       <PaddingBlue>
-        <ReactHighcharts config={highchartsConfig.call(this)} />
+        <ChartSelect
+          defaultValue={'months'}
+          onChange={e => {
+            this.setState({ timeInterval: e.target.value, historical: null }, this.fetchHistorical);
+          }}
+        >
+          <option value="days">Days</option>
+          <option value="weeks">Weeks</option>
+          <option value="months">Months</option>
+        </ChartSelect>
+        {this.state.historical ? (
+          <ReactHighcharts config={highchartsConfig.call(this)} />
+        ) : (
+          <div> Loading historical data </div>
+        )}
       </PaddingBlue>
     </ChartGrid>
   ]  
